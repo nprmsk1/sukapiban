@@ -427,7 +427,6 @@ document.getElementById('regForm').addEventListener('submit', function(e){
   const smoke = document.getElementById('smoke').value;
 
   let ok = true;
-  setInvalid('name'.replace('name','name'),false); // no-op placeholder
   const nameField = document.getElementById('namePick').closest('.field');
   const nameErr = document.getElementById('err-name');
   if(!name){ nameField.classList.add('invalid'); nameErr.classList.add('show'); ok=false; }
