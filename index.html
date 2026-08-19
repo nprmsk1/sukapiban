@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>กองช่างสุขาภิบาล</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Noto+Serif+Thai:wght@600;700&display=swap');
+
+  :root{
+    --teal-950:#0b2e2c;
+    --teal-800:#134e4a;
+    --teal-600:#0f766e;
+    --teal-500:#14a37c;
+    --sand:#f6f2e9;
+    --sand-2:#efe8d8;
+    --ink:#122321;
+    --ink-soft:#4b5b58;
+    --line:#d8cfba;
+    --white:#ffffff;
+    --amber:#c47f17;
+    --red:#b3432b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--sand);
+    color:var(--ink);
+    font-family:'Noto Sans Thai',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 0 60px;}
+
+  header.hero{
+    background:linear-gradient(160deg,var(--teal-950),var(--teal-800) 70%);
+    color:var(--sand);
+    padding:38px 22px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute; right:-60px; top:-60px;
+    width:220px;height:220px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(20,163,124,.45), transparent 70%);
+  }
+  .eyebrow{
+    font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:#9fd8c8; font-weight:600; margin:0 0 10px;
+  }
+  h1{
+    font-family:'Noto Serif Thai',serif;
+    font-size:26px; line-height:1.35; margin:0 0 8px; font-weight:700;
+    max-width:520px;
+  }
+  .hero-sub{color:#c7ddd6; font-size:14px; line-height:1.6; margin:0; max-width:480px;}
+  .step-track{display:flex; gap:6px; margin-top:22px;}
+  .step-track span{height:3px; flex:1; background:rgba(255,255,255,.18); border-radius:2px; overflow:hidden;}
+  .step-track span i{display:block; height:100%; width:0%; background:var(--teal-500); transition:width .4s ease;}
+
+  .card{
+    background:var(--white);
+    margin:-22px 16px 18px;
+    border-radius:14px;
+    padding:22px 20px 24px;
+    box-shadow:0 1px 2px rgba(18,35,33,.04), 0 8px 24px -12px rgba(18,35,33,.12);
+    border:1px solid #efe9d8;
+    position:relative;
+  }
+  .card + .card{margin-top:14px;}
+  .sec-label{
+    display:flex; align-items:baseline; gap:8px; margin:0 0 16px;
+  }
+  .sec-num{
+    font-family:'Noto Serif Thai',serif; font-weight:700; font-size:13px;
+    color:var(--teal-600); border:1.5px solid var(--teal-600); border-radius:50%;
+    width:22px;height:22px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .sec-title{font-size:15.5px; font-weight:700; color:var(--teal-950);}
+  .sec-hint{font-size:12.5px; color:var(--ink-soft); margin:2px 0 16px 30px;}
+
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  label.flabel{
+    display:block; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:6px;
+  }
+  label.flabel .opt{color:var(--ink-soft); font-weight:400;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:420px){ .row2{grid-template-columns:1fr;} }
+
+  input[type=text], input[type=number], input[type=tel], select{
+    width:100%; padding:11px 12px; font-size:14.5px; font-family:inherit;
+    border:1.5px solid var(--line); border-radius:9px; background:var(--sand);
+    color:var(--ink); appearance:none; -webkit-appearance:none;
+  }
+  select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23134e4a'><path d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%23134e4a' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:34px;
+  }
+  input:focus, select:focus{
+    outline:none; border-color:var(--teal-600); background:var(--white);
+    box-shadow:0 0 0 3px rgba(15,118,110,.12);
+  }
+  input::placeholder{color:#9aa6a3;}
+
+  .name-pick{display:flex; gap:8px;}
+  .name-pick select{flex:1;}
+
+  .check-grid{display:flex; flex-direction:column; gap:2px;}
+  .check-item{
+    display:flex; align-items:flex-start; gap:10px; padding:9px 10px;
+    border-radius:8px; cursor:pointer; transition:background .15s;
+  }
+  .check-item:hover{background:var(--sand);}
+  .check-item input[type=checkbox]{
+    width:18px;height:18px; margin-top:1px; flex-shrink:0; accent-color:var(--teal-600);
+  }
+  .check-item span{font-size:13.5px; line-height:1.5;}
+  .check-item.none-opt{border-top:1px dashed var(--line); margin-top:4px; padding-top:11px;}
+
+  .submit-bar{
+    margin:20px 16px 0; display:flex; flex-direction:column; gap:10px;
+  }
+  button{
+    font-family:inherit; font-size:15px; font-weight:700; border:none; border-radius:11px;
+    padding:14px; cursor:pointer; transition:transform .1s, opacity .15s;
+  }
+  button:active{transform:scale(.985);}
+  .btn-primary{background:var(--teal-600); color:var(--white);}
+  .btn-primary:hover{background:var(--teal-800);}
+  .btn-ghost{background:transparent; color:var(--teal-800); border:1.5px solid var(--line);}
+  .err{color:var(--red); font-size:12.5px; margin-top:6px; display:none;}
+  .err.show{display:block;}
+  .field.invalid input, .field.invalid select{border-color:var(--red); background:#fbf1ee;}
+
+  .toast{
+    position:fixed; left:16px; right:16px; bottom:16px; max-width:728px; margin:0 auto;
+    background:var(--teal-950); color:var(--sand); padding:14px 16px; border-radius:11px;
+    font-size:14px; font-weight:600; box-shadow:0 12px 30px -10px rgba(0,0,0,.4);
+    display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(10px);
+    transition:opacity .25s, transform .25s; pointer-events:none; z-index:50;
+  }
+  .toast.show{opacity:1; transform:translateY(0);}
+  .toast .dot{width:8px;height:8px;border-radius:50%;background:var(--teal-500); flex-shrink:0;}
+
+  .list-section{margin:26px 16px 0;}
+  .list-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .list-head h2{font-size:14px; font-weight:700; color:var(--teal-950); margin:0;}
+  .count-pill{
+    background:var(--sand-2); color:var(--teal-800); font-size:12px; font-weight:700;
+    padding:3px 10px; border-radius:999px;
+  }
+  .entry{
+    background:var(--white); border:1px solid #efe9d8; border-radius:11px;
+    padding:13px 14px; margin-bottom:8px; display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
+  }
+  .entry .en-name{font-weight:700; font-size:14px; color:var(--ink);}
+  .entry .en-sub{font-size:12px; color:var(--ink-soft); margin-top:3px; line-height:1.6;}
+  .entry .en-del{
+    background:none; border:none; color:#b3432b; font-size:12.5px; font-weight:700;
+    padding:4px 6px; cursor:pointer; flex-shrink:0;
+  }
+  .empty-state{
+    text-align:center; padding:26px 16px; color:var(--ink-soft); font-size:13px;
+    border:1.5px dashed var(--line); border-radius:11px; background:var(--white);
+  }
+
+  .export-bar{margin:16px 16px 0; display:flex; gap:10px;}
+  .export-bar button{flex:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">กองช่างสุขาภิบาล</p>
+    <h1>แบบฟอร์มลงทะเบียนสุขภาพผู้เข้าร่วมงานวิ่ง</h1>
+    <p class="hero-sub">กรอกชื่อ เลือกตัวเลือกที่ตรงกับตัวท่าน ระบบจะรวบรวมเป็นรายชื่อให้อัตโนมัติ และส่งออกเป็นไฟล์ Excel ได้เมื่อกรอกครบทุกคน</p>
+    <div class="step-track"><span><i id="progressBar"></i></span></div>
+  </header>
+
+  <form id="regForm" novalidate>
+
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">1</span><span class="sec-title">ข้อมูลผู้เข้าร่วม</span></div>
+
+      <div class="field">
+        <label class="flabel">ชื่อ - สกุล</label>
+        <div class="name-pick">
+          <select id="namePick">
+            <option value="">— เลือกจากรายชื่อ —</option>
+          </select>
+        </div>
+        <input type="text" id="nameManual" placeholder="หรือพิมพ์ชื่อ-สกุลเอง" style="margin-top:8px;">
+        <div class="err" id="err-name">กรุณาเลือกหรือกรอกชื่อ-สกุล</div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label class="flabel">เลขประจำตัวประชาชน <span class="opt">(ไม่บังคับ)</span></label>
+          <input type="text" id="citizenId" inputmode="numeric" placeholder="13 หลัก" maxlength="13">
+        </div>
+        <div class="field">
+          <label class="flabel">วัน/เดือน/ปีเกิด (พ.ศ.) <span class="opt">(ไม่บังคับ)</span></label>
+          <input type="text" id="dob" placeholder="เช่น 1 ม.ค. 29">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label class="flabel">เพศ</label>
+          <select id="gender">
+            <option value="">— เลือก —</option>
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+          </select>
+          <div class="err" id="err-gender">กรุณาเลือกเพศ</div>
+        </div>
+        <div class="field">
+          <label class="flabel">เบอร์โทรศัพท์</label>
+          <input type="tel" id="phone" inputmode="tel" placeholder="0812345678">
+          <div class="err" id="err-phone">กรุณากรอกเบอร์โทรศัพท์</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label class="flabel">ไซซ์เสื้อ</label>
+          <select id="shirt">
+            <option value="">— เลือก —</option>
+            <option>SS</option><option>S</option><option>M</option><option>L</option>
+            <option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option>
+          </select>
+          <div class="err" id="err-shirt">กรุณาเลือกไซซ์เสื้อ</div>
+        </div>
+        <div class="field">
+          <label class="flabel">ส่วนสูง (ซม.) / น้ำหนัก (กก.)</label>
+          <div style="display:flex; gap:8px;">
+            <input type="number" id="height" placeholder="ซม." min="0">
+            <input type="number" id="weight" placeholder="กก." min="0">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">2</span><span class="sec-title">ประสบการณ์การวิ่ง</span></div>
+
+      <div class="field">
+        <label class="flabel">จำนวนงานวิ่งที่เคยเข้าร่วม</label>
+        <select id="runCount">
+          <option value="">— เลือก —</option>
+          <option>ไม่เคยเข้าร่วมงานวิ่ง</option>
+          <option>1 งาน</option>
+          <option>2 งาน</option>
+          <option>3 งาน</option>
+          <option>4 งาน</option>
+          <option>มากกว่า 5 งาน</option>
+        </select>
+        <div class="err" id="err-runCount">กรุณาเลือกจำนวนงานวิ่งที่เคยเข้าร่วม</div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">ระยะทางที่วิ่งมากที่สุด</label>
+        <select id="runDist">
+          <option value="">— เลือก —</option>
+          <option>ไม่เคยเข้าร่วม</option>
+          <option>น้อยกว่า 5 กม.</option>
+          <option>5 กม.</option>
+          <option>10 กม.</option>
+          <option>21 กม.</option>
+          <option>42 กม.</option>
+          <option>มากกว่า 42 กม.</option>
+        </select>
+        <div class="err" id="err-runDist">กรุณาเลือกระยะทางที่วิ่งมากที่สุด</div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">สูบบุหรี่หรือไม่</label>
+        <select id="smoke">
+          <option value="">— เลือก —</option>
+          <option>สูบ</option>
+          <option>ไม่สูบ</option>
+          <option>เคยสูบ แต่เลิกมากกว่า 1 ปี</option>
+        </select>
+        <div class="err" id="err-smoke">กรุณาเลือกข้อมูลการสูบบุหรี่</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">3</span><span class="sec-title">โรคประจำตัว</span></div>
+      <p class="sec-hint" style="margin-left:0;">เลือกได้มากกว่า 1 ข้อ ตามที่ได้รับการวินิจฉัยโดยแพทย์</p>
+      <div class="check-grid" id="diseaseGrid">
+        <label class="check-item"><input type="checkbox" value="โรคเบาหวาน"><span>โรคเบาหวาน</span></label>
+        <label class="check-item"><input type="checkbox" value="โรคไขมันโลหิตสูง"><span>โรคไขมันโลหิตสูง</span></label>
+        <label class="check-item"><input type="checkbox" value="โรคความดันโลหิตสูง"><span>โรคความดันโลหิตสูง</span></label>
+        <label class="check-item"><input type="checkbox" value="โรคหลอดเลือดสมองตีบหรือแตก"><span>โรคหลอดเลือดสมองตีบหรือแตก</span></label>
+        <label class="check-item"><input type="checkbox" value="มีความเจ็บป่วยเกี่ยวกับหัวใจ"><span>มีความเจ็บป่วยเกี่ยวกับหัวใจ</span></label>
+        <label class="check-item none-opt"><input type="checkbox" value="ไม่มีโรคประจำตัวทั้ง 5 โรคนี้" id="diseaseNone"><span>ไม่มีโรคประจำตัวทั้ง 5 โรคนี้</span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">4</span><span class="sec-title">ประวัติอาการบาดเจ็บ</span></div>
+      <p class="sec-hint" style="margin-left:0;">เลือกได้มากกว่า 1 ข้อ ตามที่เคยเกิดขึ้น</p>
+      <div class="check-grid" id="injuryGrid">
+        <label class="check-item"><input type="checkbox" value="เกิดอาการชัก ขณะ/ภายหลังออกกำลังกาย"><span>เกิดอาการชัก ขณะ/ภายหลังออกกำลังกาย</span></label>
+        <label class="check-item"><input type="checkbox" value="เคยบาดเจ็บหรือเจ็บป่วย จากการเข้าร่วมงานวิ่งที่ต้องไปตรวจรักษาที่โรงพยาบาล"><span>เคยบาดเจ็บหรือเจ็บป่วย จากการเข้าร่วมงานวิ่งที่ต้องไปตรวจรักษาที่โรงพยาบาล</span></label>
+        <label class="check-item"><input type="checkbox" value="เคยรู้สึกเจ็บปวดบริเวณหน้าอกหรือแน่นบริเวณหน้าอก ขณะ/ภายหลังออกกำลังกาย"><span>เคยรู้สึกเจ็บปวดบริเวณหน้าอกหรือแน่นบริเวณหน้าอก ขณะ/ภายหลังออกกำลังกาย</span></label>
+        <label class="check-item"><input type="checkbox" value="เคยมีอาการหมดสติ หรือเกือบหมดสติ ขณะ/ภายหลังออกกำลังกาย"><span>เคยมีอาการหมดสติ หรือเกือบหมดสติ ขณะ/ภายหลังออกกำลังกาย</span></label>
+        <label class="check-item none-opt"><input type="checkbox" value="ไม่มีประวัติอาการบาดเจ็บทั้ง 4 อย่างนี้" id="injuryNone"><span>ไม่มีประวัติอาการบาดเจ็บทั้ง 4 อย่างนี้</span></label>
+      </div>
+    </div>
+
+    <div class="submit-bar">
+      <button type="submit" class="btn-primary">บันทึกรายชื่อนี้</button>
+      <button type="button" class="btn-ghost" id="clearBtn">ล้างแบบฟอร์ม</button>
+    </div>
+  </form>
+
+  <section class="list-section">
+    <div class="list-head">
+      <h2>รายชื่อที่บันทึกแล้ว</h2>
+      <span class="count-pill" id="countPill">0 คน</span>
+    </div>
+    <div id="entryList"></div>
+  </section>
+
+  <div class="export-bar">
+    <button class="btn-primary" id="exportBtn">ส่งออกเป็น Excel</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"><span class="dot"></span><span id="toastText">บันทึกแล้ว</span></div>
+
+<script>
+const PRESET_NAMES = [
+  "นายกฤษดา เจริญสุข","นางปนัฎชา คำพิลานนท์","นายปรเมษฐ์ แสงแก้ว","น.ส.ชญาน์พันธ์ ชาญเดช",
+  "นายสมบัติ นาเมืองรักษ์","นายชลธร พงศ์สิทธิ์ชัยพร","นายวิเชียร  ภูมิลำเนา","นายเทอด  ทองอยู่",
+  "นายเชษฐา  หนูเอี่ยม","นายขวัญพญา ห้วยใหญ่"
+];
+
+const namePick = document.getElementById('namePick');
+PRESET_NAMES.forEach(n=>{
+  const o=document.createElement('option'); o.value=n; o.textContent=n; namePick.appendChild(o);
+});
+
+let entries = [];
+
+// mutually-exclusive "none" checkboxes
+function wireNoneOption(gridId, noneId){
+  const grid = document.getElementById(gridId);
+  const none = document.getElementById(noneId);
+  const others = [...grid.querySelectorAll('input[type=checkbox]')].filter(c=>c.id!==noneId);
+  none.addEventListener('change', ()=>{ if(none.checked){ others.forEach(c=>c.checked=false); } });
+  others.forEach(c=>c.addEventListener('change', ()=>{ if(c.checked) none.checked=false; }));
+}
+wireNoneOption('diseaseGrid','diseaseNone');
+wireNoneOption('injuryGrid','injuryNone');
+
+function getChecked(gridId){
+  return [...document.querySelectorAll('#'+gridId+' input[type=checkbox]:checked')].map(c=>c.value);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastText').textContent=msg;
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function setInvalid(id, invalid){
+  const field = document.getElementById(id).closest('.field');
+  const err = document.getElementById('err-'+id);
+  if(field) field.classList.toggle('invalid', invalid);
+  if(err) err.classList.toggle('show', invalid);
+}
+
+function updateProgress(){
+  const ids=['gender','phone','shirt','runCount','runDist','smoke'];
+  const nameOk = namePick.value || document.getElementById('nameManual').value.trim();
+  let filled = nameOk ? 1 : 0;
+  ids.forEach(id=>{ if(document.getElementById(id).value) filled++; });
+  const pct = Math.round((filled/(ids.length+1))*100);
+  document.getElementById('progressBar').style.width = pct+'%';
+}
+document.getElementById('regForm').addEventListener('input', updateProgress);
+document.getElementById('regForm').addEventListener('change', updateProgress);
+namePick.addEventListener('change', ()=>{ if(namePick.value) document.getElementById('nameManual').value=''; });
+document.getElementById('nameManual').addEventListener('input', ()=>{ if(document.getElementById('nameManual').value) namePick.value=''; });
+
+function renderEntries(){
+  const list = document.getElementById('entryList');
+  document.getElementById('countPill').textContent = entries.length+' คน';
+  if(entries.length===0){
+    list.innerHTML = '<div class="empty-state">ยังไม่มีรายชื่อที่บันทึก — กรอกแบบฟอร์มด้านบนแล้วกด “บันทึกรายชื่อนี้”</div>';
+    return;
+  }
+  list.innerHTML = entries.map((e,i)=>`
+    <div class="entry">
+      <div>
+        <div class="en-name">${i+1}. ${e.name}</div>
+        <div class="en-sub">${e.gender||'-'} · เสื้อ ${e.shirt||'-'} · วิ่งมากสุด ${e.runDist||'-'} · ${e.smoke||'-'}</div>
+      </div>
+      <button type="button" class="en-del" data-i="${i}">ลบ</button>
+    </div>`).join('');
+  list.querySelectorAll('.en-del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      entries.splice(parseInt(btn.dataset.i),1);
+      renderEntries();
+    });
+  });
+}
+
+document.getElementById('regForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = namePick.value || document.getElementById('nameManual').value.trim();
+  const gender = document.getElementById('gender').value;
+  const phone = document.getElementById('phone').value.trim();
+  const shirt = document.getElementById('shirt').value;
+  const runCount = document.getElementById('runCount').value;
+  const runDist = document.getElementById('runDist').value;
+  const smoke = document.getElementById('smoke').value;
+
+  let ok = true;
+  setInvalid('name'.replace('name','name'),false); // no-op placeholder
+  const nameField = document.getElementById('namePick').closest('.field');
+  const nameErr = document.getElementById('err-name');
+  if(!name){ nameField.classList.add('invalid'); nameErr.classList.add('show'); ok=false; }
+  else { nameField.classList.remove('invalid'); nameErr.classList.remove('show'); }
+
+  setInvalid('gender', !gender); if(!gender) ok=false;
+  setInvalid('phone', !phone); if(!phone) ok=false;
+  setInvalid('shirt', !shirt); if(!shirt) ok=false;
+  setInvalid('runCount', !runCount); if(!runCount) ok=false;
+  setInvalid('runDist', !runDist); if(!runDist) ok=false;
+  setInvalid('smoke', !smoke); if(!smoke) ok=false;
+
+  if(!ok){ showToast('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+
+  entries.push({
+    name, citizenId: document.getElementById('citizenId').value.trim(),
+    dob: document.getElementById('dob').value.trim(),
+    gender, phone, shirt,
+    height: document.getElementById('height').value,
+    weight: document.getElementById('weight').value,
+    runCount, runDist, smoke,
+    diseases: getChecked('diseaseGrid'),
+    injuries: getChecked('injuryGrid')
+  });
+
+  renderEntries();
+  showToast('บันทึก "'+name+'" แล้ว');
+  this.reset();
+  updateProgress();
+});
+
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  document.getElementById('regForm').reset();
+  updateProgress();
+});
+
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  if(entries.length===0){ showToast('ยังไม่มีข้อมูลให้ส่งออก'); return; }
+
+  const diseaseCols = ["โรคเบาหวาน","โรคไขมันโลหิตสูง","โรคความดันโลหิตสูง","โรคหลอดเลือดสมองตีบหรือแตก","มีความเจ็บป่วยเกี่ยวกับหัวใจ","ไม่มีโรคประจำตัวทั้ง 5 โรคนี้"];
+  const injuryCols = ["เกิดอาการชัก ขณะ/ภายหลังออกกำลังกาย","เคยบาดเจ็บหรือเจ็บป่วย จากการเข้าร่วมงานวิ่งที่ต้องไปตรวจรักษาที่โรงพยาบาล","เคยรู้สึกเจ็บปวดบริเวณหน้าอกหรือแน่นบริเวณหน้าอก ขณะ/ภายหลังออกกำลังกาย","เคยมีอาการหมดสติ หรือเกือบหมดสติ ขณะ/ภายหลังออกกำลังกาย","ไม่มีประวัติอาการบาดเจ็บทั้ง 4 อย่างนี้"];
+
+  const header = ["ที่","ชื่อ - สกุล","เลขประจำตัวประชาชน","วัน/เดือน/ปีเกิด (พ.ศ.)","เพศ","หมายเลขโทรศัพท์","ไซซ์เสื้อ","ส่วนสูง (ซม.)","น้ำหนัก (กก.)","จำนวนงานวิ่งที่เคยเข้าร่วม","ระยะทางที่วิ่งมากที่สุด","สูบบุหรี่หรือไม่", ...diseaseCols, ...injuryCols];
+
+  const rows = entries.map((e,i)=>{
+    const row = [i+1, e.name, e.citizenId, e.dob, e.gender, e.phone, e.shirt, e.height, e.weight, e.runCount, e.runDist, e.smoke];
+    diseaseCols.forEach(c=> row.push(e.diseases.includes(c) ? 'P' : ''));
+    injuryCols.forEach(c=> row.push(e.injuries.includes(c) ? 'P' : ''));
+    return row;
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+  ws['!cols'] = header.map(()=>({wch:16}));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "ช่างสุขา");
+  XLSX.writeFile(wb, "รายชื่อลงทะเบียนวิ่ง.xlsx");
+  showToast('ส่งออกไฟล์ Excel แล้ว');
+});
+
+renderEntries();
+updateProgress();
+</script>
+</body>
+</html>
