@@ -169,6 +169,8 @@
 
   .export-bar{margin:16px 16px 0; display:flex; gap:10px;}
   .export-bar button{flex:1;}
+  .clear-bar{margin:28px 16px 0; padding-top:18px; border-top:1px dashed var(--line); display:flex; justify-content:center;}
+  .clear-bar button{background:transparent; color:var(--ink-soft); border:none; font-size:13px; font-weight:600; padding:8px 12px; text-decoration:underline; text-underline-offset:3px;}
 </style>
 </head>
 <body>
@@ -327,7 +329,6 @@
 
     <div class="submit-bar">
       <button type="submit" class="btn-primary">บันทึกรายชื่อนี้</button>
-      <button type="button" class="btn-ghost" id="clearBtn">ล้างแบบฟอร์ม</button>
     </div>
   </form>
 
@@ -341,6 +342,10 @@
 
   <div class="export-bar">
     <button class="btn-primary" id="exportBtn">ส่งออกเป็น Excel</button>
+  </div>
+
+  <div class="clear-bar">
+    <button type="button" class="btn-ghost" id="clearBtn">ล้างแบบฟอร์ม</button>
   </div>
 
 </div>
