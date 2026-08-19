@@ -210,7 +210,7 @@
 
       <div class="row2">
         <div class="field">
-          <label class="flabel">เพศ</label>
+          <label class="flabel">เพศ <span class="opt">(ไม่บังคับ)</span></label>
           <select id="gender">
             <option value="">— เลือก —</option>
             <option value="ชาย">ชาย</option>
@@ -219,7 +219,7 @@
           <div class="err" id="err-gender">กรุณาเลือกเพศ</div>
         </div>
         <div class="field">
-          <label class="flabel">เบอร์โทรศัพท์</label>
+          <label class="flabel">เบอร์โทรศัพท์ <span class="opt">(ไม่บังคับ)</span></label>
           <input type="tel" id="phone" inputmode="tel" placeholder="0812345678">
           <div class="err" id="err-phone">กรุณากรอกเบอร์โทรศัพท์</div>
         </div>
@@ -227,7 +227,7 @@
 
       <div class="row2">
         <div class="field">
-          <label class="flabel">ไซซ์เสื้อ</label>
+          <label class="flabel">ไซซ์เสื้อ <span class="opt">(ไม่บังคับ)</span></label>
           <select id="shirt">
             <option value="">— เลือก —</option>
             <option>SS</option><option>S</option><option>M</option><option>L</option>
@@ -249,7 +249,7 @@
       <div class="sec-label"><span class="sec-num">2</span><span class="sec-title">ประสบการณ์การวิ่ง</span></div>
 
       <div class="field">
-        <label class="flabel">จำนวนงานวิ่งที่เคยเข้าร่วม</label>
+        <label class="flabel">จำนวนงานวิ่งที่เคยเข้าร่วม <span class="opt">(ไม่บังคับ)</span></label>
         <select id="runCount">
           <option value="">— เลือก —</option>
           <option>ไม่เคยเข้าร่วมงานวิ่ง</option>
@@ -263,7 +263,7 @@
       </div>
 
       <div class="field">
-        <label class="flabel">ระยะทางที่วิ่งมากที่สุด</label>
+        <label class="flabel">ระยะทางที่วิ่งมากที่สุด <span class="opt">(ไม่บังคับ)</span></label>
         <select id="runDist">
           <option value="">— เลือก —</option>
           <option>ไม่เคยเข้าร่วม</option>
@@ -278,7 +278,7 @@
       </div>
 
       <div class="field">
-        <label class="flabel">สูบบุหรี่หรือไม่</label>
+        <label class="flabel">สูบบุหรี่หรือไม่ <span class="opt">(ไม่บังคับ)</span></label>
         <select id="smoke">
           <option value="">— เลือก —</option>
           <option>สูบ</option>
@@ -432,14 +432,14 @@ document.getElementById('regForm').addEventListener('submit', function(e){
   if(!name){ nameField.classList.add('invalid'); nameErr.classList.add('show'); ok=false; }
   else { nameField.classList.remove('invalid'); nameErr.classList.remove('show'); }
 
-  setInvalid('gender', !gender); if(!gender) ok=false;
-  setInvalid('phone', !phone); if(!phone) ok=false;
-  setInvalid('shirt', !shirt); if(!shirt) ok=false;
-  setInvalid('runCount', !runCount); if(!runCount) ok=false;
-  setInvalid('runDist', !runDist); if(!runDist) ok=false;
-  setInvalid('smoke', !smoke); if(!smoke) ok=false;
+  setInvalid('gender', false);
+  setInvalid('phone', false);
+  setInvalid('shirt', false);
+  setInvalid('runCount', false);
+  setInvalid('runDist', false);
+  setInvalid('smoke', false);
 
-  if(!ok){ showToast('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+  if(!ok){ showToast('กรุณากรอกชื่อ-สกุลก่อนบันทึก'); return; }
 
   entries.push({
     name, citizenId: document.getElementById('citizenId').value.trim(),
